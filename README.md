@@ -1,8 +1,6 @@
 # Do Skills
 
-Private docs and learning site for [Do-Skills](https://github.com/edheltzel/Do-Skills). It is not deployed.
-
-Pages send `noindex, nofollow` until real content lands. Remove that tag then.
+Docs and learning site for [Do-Skills](https://github.com/edheltzel/Do-Skills), live at https://doskills.edheltzel.codes.
 
 A curated set of skills for coding agents: a loop from idea to pull request, plus stack skills you add per project. Install the global set once with npx skills.
 
