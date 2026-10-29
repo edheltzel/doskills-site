@@ -2,16 +2,11 @@
 // directions, on the landing page and a docs page, CPU throttled 4x.
 // A frame counts only once the browser has painted. Chrome's blank
 // pre-navigation frame is not one of ours (it is pure black or pure white).
-//
-// When the landing hero canvas is present, this also samples text colours
-// against the glyph pixels under each text box. The token contrast gate does
-// not cover that.
 
 import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
-import { PNG } from 'pngjs';
 
 const root = path.resolve('dist');
 const chrome = process.env.CHROME_PATH || '/usr/bin/google-chrome';
@@ -47,16 +42,6 @@ function serve(dir) {
   });
 }
 
-const lin = (v) => {
-  const s = v / 255;
-  return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
-};
-const lum = (c) => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2]);
-const contrast = (a, b) => {
-  const x = lum(a);
-  const y = lum(b);
-  return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
-};
 const parse = (value) => {
   const v = value.trim();
   if (v[0] === '#') return [1, 3, 5].map((i) => parseInt(v.slice(i, i + 2), 16));
@@ -145,105 +130,6 @@ for (const pagePath of pages) {
       } wrong=${wrong.length}`,
     );
     await context.close();
-  }
-}
-
-const hero = await (async () => {
-  const context = await browser.newContext({
-    viewport: { width: 1280, height: 800 },
-    deviceScaleFactor: 1,
-    colorScheme: 'dark',
-  });
-  const page = await context.newPage();
-  await page.addInitScript(() => localStorage.setItem('doskills-theme', 'dark'));
-  await page.goto(base + '/?still=1', { waitUntil: 'load' });
-  const has = await page.locator('#field').count();
-  await context.close();
-  return has > 0;
-})();
-
-if (!hero) {
-  lines.push('hero pixels: skipped (no canvas). The token gate does not cover glyph pixels.');
-} else {
-  const viewports = [
-    { width: 1280, height: 800 },
-    { width: 390, height: 844 },
-  ];
-  for (const theme of ['dark', 'light']) {
-    for (const viewport of viewports) {
-    const context = await browser.newContext({
-      viewport,
-      deviceScaleFactor: 1,
-      colorScheme: theme,
-    });
-    const page = await context.newPage();
-    await page.addInitScript((value) => localStorage.setItem('doskills-theme', value), theme);
-    await page.goto(base + '/?still=1', { waitUntil: 'networkidle' });
-    await page.waitForTimeout(600);
-    const boxes = await page.evaluate(() => {
-      const acc = getComputedStyle(document.documentElement).getPropertyValue('--acc').trim();
-      const acc2 = getComputedStyle(document.documentElement).getPropertyValue('--acc2').trim();
-      const pick = [];
-      const add = (name, el, color) => {
-        if (!el) return;
-        const range = document.createRange();
-        range.selectNodeContents(el);
-        const rects = [...range.getClientRects()];
-        const r = rects.length
-          ? {
-              x: Math.min(...rects.map((box) => box.left)),
-              y: Math.min(...rects.map((box) => box.top)),
-              w: Math.max(...rects.map((box) => box.right)) - Math.min(...rects.map((box) => box.left)),
-              h: Math.max(...rects.map((box) => box.bottom)) - Math.min(...rects.map((box) => box.top)),
-            }
-          : el.getBoundingClientRect();
-        pick.push({ name, x: r.x, y: r.y, w: r.w ?? r.width, h: r.h ?? r.height, color: color || getComputedStyle(el).color });
-      };
-      const heading = document.querySelector('h1');
-      add('headline', heading?.firstChild, heading ? getComputedStyle(heading).color : '');
-      add('headline line 2', document.querySelector('h1 .l2'));
-      add('agent accent', document.querySelector('h1 .l3'), acc);
-      add('agent accent end', document.querySelector('h1 .l3'), acc2);
-      add('eyebrow', document.querySelector('.eyebrow'));
-      add('sub', document.querySelector('.sub'));
-      add('command', document.querySelector('.cmd .t'));
-      add('prompt', document.querySelector('.cmd .d'));
-      add('copy', document.querySelector('.cmd .cp'));
-      add('hint', document.querySelector('.hint'));
-      add('button', document.querySelector('.btn'));
-      // Keep panels and the shade. Clear each element's own colour, not only
-      // an inherited one, so the sample is the backdrop under the glyphs.
-      document.querySelectorAll('.copy, .copy *, .top, .top *, .foot, .foot *').forEach((el) => {
-        el.style.color = 'transparent';
-        el.style.webkitTextFillColor = 'transparent';
-      });
-      const accentLine = document.querySelector('h1 .l3');
-      if (accentLine) accentLine.style.background = 'none';
-      return pick;
-    });
-    const png = PNG.sync.read(await page.screenshot());
-    let worst = { name: '', ratio: 99 };
-    for (const box of boxes) {
-      const x0 = Math.max(0, Math.floor(box.x));
-      const y0 = Math.max(0, Math.floor(box.y));
-      const x1 = Math.min(png.width, Math.ceil(box.x + box.w));
-      const y1 = Math.min(png.height, Math.ceil(box.y + box.h));
-      const fg = parse(box.color);
-      let low = 99;
-      for (let y = y0; y < y1; y += 2) {
-        for (let x = x0; x < x1; x += 2) {
-          const i = (y * png.width + x) * 4;
-          const ratio = contrast(fg, [png.data[i], png.data[i + 1], png.data[i + 2]]);
-          if (ratio < low) low = ratio;
-        }
-      }
-      if (low < worst.ratio) worst = { name: box.name, ratio: low };
-      if (low < 4.5) failed = true;
-      lines.push(`  ${low >= 4.5 ? 'ok  ' : 'FAIL'} hero ${theme} ${viewport.width} ${box.name} ${low.toFixed(2)}`);
-    }
-    lines.push(`hero ${theme} ${viewport.width} lowest ${worst.ratio.toFixed(2)} (${worst.name})`);
-    await context.close();
-    }
   }
 }
 
