@@ -10,6 +10,12 @@ export const installCommand =
 export const projectCommand =
   'npx skills add https://github.com/edheltzel/Do-Skills/tree/master/skills/project/<group>';
 
+/**
+ * Skill counts shown in the hero ledger and the scope cards. One source so the
+ * two never drift; update here when Do-Skills adds or removes a skill.
+ */
+export const counts = { skills: 67, global: 38, project: 29, groups: 13 };
+
 /** Placeholder until the real docs and install guide exist. Keep the links visible. */
 export const docsHref = '/docs/';
 
