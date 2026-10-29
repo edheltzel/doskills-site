@@ -1,7 +1,7 @@
 export const siteName = 'Do Skills';
 
 export const siteDescription =
-  'A tested set of skills for coding agents: a loop from idea to merged change, plus stack skills you add per project. Install them once with npx skills.';
+  'A curated set of skills for coding agents: a loop from idea to merged change, plus stack skills you add per project. Install the global set once with npx skills.';
 
 export const installCommand =
   'npx skills add https://github.com/edheltzel/Do-Skills/tree/master/skills/global -g';
@@ -15,5 +15,5 @@ export const ogImage = {
   path: '/og.png',
   width: 1200,
   height: 630,
-  alt: 'Do Skills. A tested set of skills for coding agents.',
+  alt: 'Do Skills. A curated set of skills for coding agents: a loop from idea to merged change, plus stack skills you add per project. Install the global set once with npx skills.',
 };

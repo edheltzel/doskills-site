@@ -2,7 +2,7 @@
 
 Private docs and learning site for [Do-Skills](https://github.com/edheltzel/Do-Skills). It is not deployed.
 
-A tested set of skills for coding agents: a loop from idea to merged change, plus stack skills you add per project. Install them once with npx skills.
+A curated set of skills for coding agents: a loop from idea to merged change, plus stack skills you add per project. Install the global set once with npx skills.
 
 ## Run locally
 
