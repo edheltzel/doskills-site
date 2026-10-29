@@ -1,0 +1,153 @@
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--b1);
+}
+
+.word {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.word:visited {
+  color: var(--text);
+}
+
+.word i {
+  display: block;
+  width: 8px;
+  height: 8px;
+  background: var(--acc);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--acc);
+  flex: none;
+}
+
+.top nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+}
+
+.top nav a,
+.top .theme-toggle {
+  color: var(--t2);
+  padding: 6px 8px;
+  border: 1px solid var(--b2);
+  background: var(--bg);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.top nav a:visited,
+.top .theme-toggle:visited {
+  color: var(--t2);
+}
+
+.top nav a:hover,
+.top .theme-toggle:hover {
+  color: var(--text);
+  border-color: var(--b4);
+}
+
+.sheet {
+  width: min(40rem, 100%);
+  margin: 0 auto;
+  padding: 48px 16px 72px;
+}
+
+h1 {
+  margin: 0 0 12px;
+  font-weight: 500;
+  font-size: clamp(36px, 8vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+
+.sub {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--t2);
+  overflow-wrap: anywhere;
+}
+
+.cmd {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-top: 28px;
+  border: 1px solid var(--b2);
+  background: var(--s1);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.cmd-scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 12px 14px;
+}
+
+.cmd .d {
+  color: var(--acc);
+  margin-right: 8px;
+}
+
+.cmd .t {
+  display: inline-block;
+  line-height: 20px;
+  white-space: nowrap;
+  color: var(--text);
+  vertical-align: top;
+}
+
+.cmd .cp {
+  flex: 0 0 auto;
+  margin: 0;
+  border: 0;
+  border-left: 1px solid var(--b2);
+  background: transparent;
+  color: var(--t3);
+  font-family: inherit;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cmd .cp:hover {
+  color: var(--text);
+}
+
+.hint {
+  margin: 10px 0 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--t3);
+}
