@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import Cmd from '../components/Cmd.astro';
-import { docsHref, installCommand, projectCommand, siteName } from '../site.js';
+import { counts, docsHref, installCommand, projectCommand, siteName } from '../site.js';
 import '../styles/landing.css';
 
 const repo = 'https://github.com/edheltzel/Do-Skills';
@@ -53,10 +53,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
         <i class="spark" id="sp1" aria-hidden="true"></i><i class="spark v" id="sp2" aria-hidden="true"></i>
         <div class="foot ledger">
           <dl>
-            <div><dt>Skills</dt><dd>67</dd></div>
-            <div><dt>Global</dt><dd>38</dd></div>
-            <div><dt>Project</dt><dd>29</dd></div>
-            <div><dt>Groups</dt><dd>13</dd></div>
+            <div><dt>Skills</dt><dd>{counts.skills}</dd></div>
+            <div><dt>Global</dt><dd>{counts.global}</dd></div>
+            <div><dt>Project</dt><dd>{counts.project}</dd></div>
+            <div><dt>Groups</dt><dd>{counts.groups}</dd></div>
           </dl>
           <div class="legal"><span>WTFPL · work in progress</span></div>
         </div>
@@ -94,14 +94,14 @@ const pad = (n: number) => String(n).padStart(2, '0');
           <h2 id="scope-title">Install once, <span>then add stacks.</span></h2>
           <div class="pair">
             <article class="sc">
-              <header><span class="scl">Global</span><span class="scn">38</span></header>
+              <header><span class="scl">Global</span><span class="scn">{counts.global}</span></header>
               <h3>Useful in any repo</h3>
               <p class="scp">Review, planning, commits, docs. Install once per machine with <code>-g</code>.</p>
               <p class="grps">{globalGroups.map((g) => <code class="grp">{g}</code>)}</p>
               <Cmd command={installCommand} />
             </article>
             <article class="sc">
-              <header><span class="scl">Project</span><span class="scn">29</span></header>
+              <header><span class="scl">Project</span><span class="scn">{counts.project}</span></header>
               <h3>Pay off with one stack or product</h3>
               <p class="scp">Run from inside the project. Replace <code>&lt;group&gt;</code> with a group name.</p>
               <p class="grps">{projectGroups.map((g) => <code class="grp">{g}</code>)}</p>

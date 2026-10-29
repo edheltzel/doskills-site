@@ -4,7 +4,7 @@ Private docs and learning site for [Do-Skills](https://github.com/edheltzel/Do-S
 
 Pages send `noindex, nofollow` until real content lands. Remove that tag then.
 
-A curated set of skills for coding agents: a loop from idea to merged change, plus stack skills you add per project. Install the global set once with npx skills.
+A curated set of skills for coding agents: a loop from idea to pull request, plus stack skills you add per project. Install the global set once with npx skills.
 
 ## Run locally
 
