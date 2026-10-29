@@ -1,5 +1,6 @@
 // Serves dist and checks the landing install box at a 390px viewport.
-// The command stays on one line and scrolls. The Copy button does not move.
+// Every install command wraps at its slashes and is never clipped. The Copy
+// button sits inside its box and does not cover the command.
 
 import http from 'node:http';
 import fs from 'node:fs';
@@ -61,50 +62,44 @@ const page = await context.newPage();
 await page.goto(base + '/', { waitUntil: 'load' });
 await page.evaluate(() => document.fonts.ready);
 
-const measured = await page.evaluate(() => {
-  const text = document.querySelector('.cmd .t');
-  const scroll = document.querySelector('.cmd-scroll');
-  const button = document.querySelector('.cmd .cp');
-  if (!text || !scroll || !button) return { missing: true };
-  const lineHeight = parseFloat(getComputedStyle(text).lineHeight);
-  const before = button.getBoundingClientRect();
-  const beforeBox = { x: before.x, y: before.y, width: before.width, height: before.height };
-  scroll.scrollLeft = scroll.scrollWidth;
-  const after = button.getBoundingClientRect();
-  return {
-    missing: false,
-    height: text.getBoundingClientRect().height,
-    lineHeight,
-    scrollWidth: scroll.scrollWidth,
-    clientWidth: scroll.clientWidth,
-    before: beforeBox,
-    after: { x: after.x, y: after.y, width: after.width, height: after.height },
-    docWidth: document.documentElement.scrollWidth,
-  };
-});
+const boxes = await page.evaluate(() =>
+  [...document.querySelectorAll('.cmd')].map((box) => {
+    const text = box.querySelector('.t');
+    const button = box.querySelector('.cp');
+    if (!text || !button) return { missing: true };
+    const b = box.getBoundingClientRect();
+    const t = text.getBoundingClientRect();
+    const c = button.getBoundingClientRect();
+    return {
+      missing: false,
+      clipped: text.scrollWidth > text.clientWidth + 0.5,
+      inside: c.left >= b.left - 0.5 && c.right <= b.right + 0.5 && t.right <= b.right + 0.5,
+      overlap: t.right > c.left + 0.5 && t.bottom > c.top && t.top < c.bottom,
+      lines: Math.round(t.height / parseFloat(getComputedStyle(text).lineHeight)),
+    };
+  }),
+);
+const docWidth = await page.evaluate(() => document.documentElement.scrollWidth);
 
-if (measured.missing) {
+if (boxes.length < 2) {
   failed = true;
-  lines.push('FAIL install box elements missing');
-} else {
-  const oneLine = Math.abs(measured.height - measured.lineHeight) < 0.5;
-  const scrolls = measured.scrollWidth > measured.clientWidth;
-  const still = ['x', 'y', 'width', 'height'].every(
-    (key) => Math.abs(measured.before[key] - measured.after[key]) < 0.5,
-  );
-  const fits = measured.docWidth <= 390;
-  if (!oneLine || !scrolls || !still || !fits) failed = true;
-  lines.push(
-    `${oneLine ? 'ok  ' : 'FAIL'} command height ${measured.height.toFixed(2)} line ${measured.lineHeight.toFixed(2)}`,
-  );
-  lines.push(
-    `${scrolls ? 'ok  ' : 'FAIL'} scroll ${measured.scrollWidth} > ${measured.clientWidth}`,
-  );
-  lines.push(
-    `${still ? 'ok  ' : 'FAIL'} copy x ${measured.before.x.toFixed(2)} -> ${measured.after.x.toFixed(2)}`,
-  );
-  lines.push(`${fits ? 'ok  ' : 'FAIL'} document scrollWidth ${measured.docWidth}`);
+  lines.push(`FAIL expected the two hero install boxes, found ${boxes.length}`);
 }
+boxes.forEach((box, i) => {
+  if (box.missing) {
+    failed = true;
+    lines.push(`FAIL install box ${i + 1} elements missing`);
+    return;
+  }
+  const ok = !box.clipped && box.inside && !box.overlap;
+  if (!ok) failed = true;
+  lines.push(
+    `${ok ? 'ok  ' : 'FAIL'} box ${i + 1}: ${box.lines} line(s), clipped ${box.clipped}, inside ${box.inside}, overlap ${box.overlap}`,
+  );
+});
+const fits = docWidth <= 390;
+if (!fits) failed = true;
+lines.push(`${fits ? 'ok  ' : 'FAIL'} document scrollWidth ${docWidth}`);
 
 await browser.close();
 server.close();
