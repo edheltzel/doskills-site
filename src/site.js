@@ -22,7 +22,7 @@ export const docsHref = '/docs/';
 /**
  * Social preview image. The landing page (Base.astro) and every docs page
  * (astro.config head) resolve `path` against the one `site` origin, so the two
- * always point at the same absolute URL. The file itself is not in this scaffold.
+ * always point at the same absolute URL. The file is public/og.png (1200x630).
  */
 export const ogImage = {
   path: '/og.png',
