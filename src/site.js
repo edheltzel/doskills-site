@@ -16,13 +16,13 @@ export const projectCommand =
  */
 export const counts = { skills: 67, global: 38, project: 29, groups: 13 };
 
-/** Placeholder until the real docs and install guide exist. Keep the links visible. */
-export const docsHref = '/docs/';
+/** Docs live in the product repo (C2); the site links out. */
+export const docsHref = 'https://github.com/edheltzel/Do-Skills/blob/master/docs/README.md';
+export const installHref = 'https://github.com/edheltzel/Do-Skills/blob/master/README.md#installation';
 
 /**
- * Social preview image. The landing page (Base.astro) and every docs page
- * (astro.config head) resolve `path` against the one `site` origin, so the two
- * always point at the same absolute URL. The file is public/og.png (1200x630).
+ * Social preview image. The landing page (Base.astro) resolves `path` against
+ * the `site` origin. The file is public/og.png (1200x630).
  */
 export const ogImage = {
   path: '/og.png',
