@@ -38,7 +38,10 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Docs',
-          items: [{ label: 'Overview', slug: 'docs' }],
+          items: [
+            { label: 'Overview', slug: 'docs' },
+            { label: 'do-grit (opt-in)', slug: 'docs/do-grit' },
+          ],
         },
       ],
     }),
