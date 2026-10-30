@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import Cmd from '../components/Cmd.astro';
-import { counts, docsHref, installCommand, projectCommand, siteName } from '../site.js';
+import { counts, docsHref, installCommand, installHref, projectCommand, siteName } from '../site.js';
 import '../styles/landing.css';
 
 const repo = 'https://github.com/edheltzel/Do-Skills';
@@ -17,9 +17,9 @@ const steps = [
 const globalGroups = ['core', 'workflow', 'operations', 'content', 'personal'];
 const projectGroups = ['typescript', 'frontend', 'backend', 'tooling', 'swift', 'product', 'marketing', 'personal'];
 const starts = [
-  { title: 'Install', text: 'The commands to install globally, per project, or one skill at a time.' },
-  { title: 'Which skills should I install?', text: 'Pick the groups your project needs.' },
-  { title: 'Your first change with /do-it', text: 'Walk one change from request to pull request.' },
+  { title: 'Install', text: 'The commands to install globally, per project, or one skill at a time.', href: installHref },
+  { title: 'Which skills should I install?', text: 'Pick the groups your project needs.', href: docsHref },
+  { title: 'Your first change with /do-it', text: 'Walk one change from request to pull request.', href: 'https://github.com/edheltzel/Do-Skills/blob/master/docs/global/workflow/it.md' },
 ];
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
@@ -48,7 +48,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
             <div class="crow"><span class="lab"><b>2</b> Inside each project <em>per stack</em></span><Cmd command={projectCommand} /></div>
           </div>
           <p class="hint">Work in progress. It changes often, so read a skill before you install it.</p>
-          <div class="cta"><a class="btn" href={docsHref}>Read the install guide</a><a class="ghost" href={repo}>GitHub</a></div>
+          <div class="cta"><a class="btn" href={installHref}>Read the install guide</a><a class="ghost" href={repo}>GitHub</a></div>
         </div>
         <i class="spark" id="sp1" aria-hidden="true"></i><i class="spark v" id="sp2" aria-hidden="true"></i>
         <div class="foot ledger">
@@ -113,7 +113,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
           <h2 id="start-title">Start here</h2>
           <div class="shs">
             {starts.map((s, i) => (
-              <a class="sh" href={docsHref}><span class="shn">{pad(i + 1)}</span><b>{s.title}</b><span class="shd">{s.text}</span><i aria-hidden="true">→</i></a>
+              <a class="sh" href={s.href}><span class="shn">{pad(i + 1)}</span><b>{s.title}</b><span class="shd">{s.text}</span><i aria-hidden="true">→</i></a>
             ))}
           </div>
         </section>
@@ -121,7 +121,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     </main>
     <footer class="base">
       <span>Do Skills is curated by Ed Heltzel. Root license WTFPL; some skills carry their own license, so check a skill&rsquo;s folder before you reuse it.<br />Work in progress. It changes often.</span>
-      <nav aria-label="Footer"><a href={docsHref}>Docs</a><a href={repo}>GitHub</a></nav>
+      <nav aria-label="Footer"><a href={docsHref}>Docs</a><a href={repo}>GitHub</a><a href="https://github.com/edheltzel/Do-Skills/blob/master/LICENSE">License</a></nav>
     </footer>
   </div>
 </Base>
