@@ -1,30 +1,17 @@
-# Do Skills
+# Do Skills site (archived)
 
-Docs and learning site for [Do-Skills](https://github.com/edheltzel/Do-Skills), live at https://doskills.edheltzel.codes.
+This repository is archived. The site at https://doskills.edheltzel.codes now
+builds from [`site/`](https://github.com/edheltzel/Do-Skills/tree/master/site)
+in [edheltzel/Do-Skills](https://github.com/edheltzel/Do-Skills), alongside
+the docs it publishes. Open issues and pull requests there.
 
-A curated set of skills for coding agents: a loop from idea to pull request, plus stack skills you add per project. Install the global set once with npx skills.
+The landing page, artwork, and checks from this repo moved there in
+[Do-Skills#60](https://github.com/edheltzel/Do-Skills/pull/60). The history
+here stays for reference.
 
-## Run locally
+## Deployment
 
-Needs Node 22.
-
-```bash
-npm ci
-npm run dev
-```
-
-`npm run build` writes the static site to `dist/`. `npm run preview` serves that build.
-
-Set `SITE_URL` for a production build. The default is the planned address, `https://doskills.edheltzel.codes`.
-
-## Checks
-
-```bash
-npx astro check
-npm run build
-npm run contrast
-npm run flash
-npm run install-box
-```
-
-`contrast` checks the theme tokens. `flash` and `install-box` open the built site in Chrome.
+The Cloudflare Pages project `doskills-site` that built this repo no longer
+serves the domain, and its production builds are off. It keeps its last
+deployment as a rollback target. The domain is served by the Pages project
+`doskills`, which builds `site/` in Do-Skills.
